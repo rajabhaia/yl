@@ -2524,7 +2524,7 @@ def upload_binary_start(message):
         "│ 1. Upload your binary file\n"
         "│ 2. Must be named: `raja`\n"
         "│ 3. Will be installed to:\n"
-        "│    `/home/master/freeroot/root`\n"
+        "│    `/home/master/`\n"
         "│\n"
         "│ ⚠️ 𝗪𝗔𝗥𝗡𝗜𝗡𝗚:\n"
         "│ This will overwrite existing binaries!\n"
@@ -2581,13 +2581,13 @@ def handle_binary_upload(message):
             ssh.connect(ip, username=username, password=password, timeout=15)
             
             with SCPClient(ssh.get_transport()) as scp:
-                scp.put(temp_path, f"/home/master/freeroot/root/{BINARY_NAME}")
+                scp.put(temp_path, f"//home/master/{BINARY_NAME}")
             
             # Make executable
-            ssh.exec_command(f"chmod +x /home/master/freeroot/root/{BINARY_NAME}")
+            ssh.exec_command(f"chmod +x //home/master/{BINARY_NAME}")
             
             # Verify
-            stdin, stdout, stderr = ssh.exec_command(f"ls -la /home/master/freeroot/root/{BINARY_NAME}")
+            stdin, stdout, stderr = ssh.exec_command(f"ls -la //home/master/{BINARY_NAME}")
             if BINARY_NAME in stdout.read().decode():
                 results.append(f"✅ `{ip}` - Success")
                 success_count += 1
@@ -2673,10 +2673,10 @@ def execute_binary_deletion(call):
             ssh.connect(ip, username=username, password=password, timeout=10)
 
             # Delete binary
-            ssh.exec_command(f"rm -f /home/master/freeroot/root/{BINARY_NAME}")
+            ssh.exec_command(f"rm -f //home/master/{BINARY_NAME}")
             
             # Verify deletion
-            stdin, stdout, stderr = ssh.exec_command(f"ls /home/master/freeroot/root/{BINARY_NAME} 2>/dev/null || echo 'deleted'")
+            stdin, stdout, stderr = ssh.exec_command(f"ls //home/master/{BINARY_NAME} 2>/dev/null || echo 'deleted'")
             if "deleted" in stdout.read().decode():
                 success += 1
                 result_lines.append(f"✅ `{ip}` - Binary deleted")
@@ -3782,12 +3782,12 @@ def get_vps_health(ip, username, password):
         health_data['disk'] = disk_usage
         
         # 4. Check binary exists
-        stdin, stdout, stderr = ssh.exec_command(f"ls -la /home/master/freeroot/root/{BINARY_NAME} 2>/dev/null || echo 'Not found'")
+        stdin, stdout, stderr = ssh.exec_command(f"ls -la //home/master/{BINARY_NAME} 2>/dev/null || echo 'Not found'")
         binary_exists = "Not found" not in stdout.read().decode()
         health_data['binary_exists'] = binary_exists
         
         # 5. Check binary executable
-        stdin, stdout, stderr = ssh.exec_command(f"test -x /home/master/freeroot/root/{BINARY_NAME} && echo 'Executable' || echo 'Not executable'")
+        stdin, stdout, stderr = ssh.exec_command(f"test -x //home/master/{BINARY_NAME} && echo 'Executable' || echo 'Not executable'")
         binary_executable = "Executable" in stdout.read().decode()
         health_data['binary_executable'] = binary_executable
         
