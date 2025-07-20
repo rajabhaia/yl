@@ -39,7 +39,27 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Constants for configuration
+MIN_THREADS = 100
+MAX_THREADS = 10000
+DEFAULT_THREADS = 200
+MIN_PACKET_SIZE = 1
+MAX_PACKET_SIZE = 65500
+DEFAULT_PACKET_SIZE = 64
 
+# Load configuration
+config = load_config()
+THREADS_PER_VPS = config.get('threads_per_vps', DEFAULT_THREADS)
+PACKET_SIZE = config.get('packet_size', DEFAULT_PACKET_SIZE)
+
+# Validate loaded values
+if not MIN_THREADS <= THREADS_PER_VPS <= MAX_THREADS:
+    THREADS_PER_VPS = DEFAULT_THREADS
+    logger.warning(f"Invalid thread count in config, using default {DEFAULT_THREADS}")
+
+if not MIN_PACKET_SIZE <= PACKET_SIZE <= MAX_PACKET_SIZE:
+    PACKET_SIZE = DEFAULT_PACKET_SIZE
+    logger.warning(f"Invalid packet size in config, using default {DEFAULT_PACKET_SIZE}")
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
